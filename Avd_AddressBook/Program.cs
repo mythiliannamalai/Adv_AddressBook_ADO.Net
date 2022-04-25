@@ -36,10 +36,26 @@ namespace Avd_AddressBook
                 }
             }
         }
+        public static List<ContactDetails> CreateAddressBook()
+        {
+            List<ContactDetails> contacts = new List<ContactDetails>();
+            ContactDetails contactDetails = new ContactDetails();
+            SqlConnection connection = new SqlConnection(connectionString);
+            string spname = "dbo.Create_AddressBook";
+            using (connection)
+            {
+                SqlCommand sqlCommand = new SqlCommand(spname, connection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                connection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                connection.Close();
+                return contacts;
+            }
+        }
         static void Main(string[]args)
         {
-            AddressBook.EstablishConnection();
-            
+            AddressBook.EstablishConnection();  
+            AddressBook.CreateAddressBook();
         }
     }
 }
