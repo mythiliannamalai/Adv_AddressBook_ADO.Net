@@ -36,6 +36,7 @@ namespace Avd_AddressBook
                 }
             }
         }
+        //UC-2 Create contact
         public static List<ContactDetails> CreateAddressBook()
         {
             List<ContactDetails> contacts = new List<ContactDetails>();
@@ -52,6 +53,7 @@ namespace Avd_AddressBook
                 return contacts;
             }
         }
+        //UC-3 Add contact        
         public static void Add_Contact()
         {           
             List<ContactDetails> contacts = new List<ContactDetails>();
@@ -94,6 +96,7 @@ namespace Avd_AddressBook
                    connection.Close();                
             }
         }
+        //UC-4 Edit contact
         public static void Edit_Contact()
         {
             List<ContactDetails> contacts = new List<ContactDetails>();
@@ -157,6 +160,7 @@ namespace Avd_AddressBook
                 }
             }
         }
+        //UC-5 delete contact
         public static void Delete_Contact()
         {
             List<ContactDetails> contacts = new List<ContactDetails>();
@@ -199,14 +203,62 @@ namespace Avd_AddressBook
                 }
             }
         }
+        //UC-6 Retrive value base on city and state
+        public static void GetDataFrom_City_OrState()
+        {
+            List<ContactDetails> contacts = new List<ContactDetails>();
+            ContactDetails contactDetails = new ContactDetails();
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            string spname = "dbo.GetAllData";
+            using (connection)
+            {
+                SqlCommand sqlCommand = new SqlCommand(spname, connection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                Console.WriteLine("Retrive Contact based on city ot state");
+                Console.WriteLine("---------------------------------------");
+                Console.WriteLine("Enter City :");
+                contactDetails.City = Console.ReadLine();
+                sqlCommand.Parameters.AddWithValue("@City", contactDetails.City);
+                Console.WriteLine("Enter State :");
+                contactDetails.State = Console.ReadLine();
+                sqlCommand.Parameters.AddWithValue("@State", contactDetails.State);
+                connection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                if (reader.Read())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            contactDetails.FirstName = (string)reader["FirstName"];
+                            contactDetails.LastName = (string)reader["LastName"];
+                            contactDetails.Address = (string)reader["Address"];
+                            contactDetails.City = (string)reader["City"];
+                            contactDetails.State = (string)reader["State"];
+                            contactDetails.Zipcode = (string)reader["Zipcode"];
+                            contactDetails.PhoneNumber = (string)reader["PhoneNumber"];
+                            contactDetails.EmailId = (string)reader["EmailId"];
+                            contacts.Add(contactDetails);
+                            Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
+                                + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
+                               + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+        }
         static void Main(string[]args)
         {
-            AddressBook.EstablishConnection();  
+            AddressBook.EstablishConnection();
             //AddressBook.CreateAddressBook();
             //AddressBook.Add_Contact();
             //AddressBook.Edit_Contact();
-                AddressBook.Delete_Contact();
+            //AddressBook.Delete_Contact();
+            AddressBook.GetDataFrom_City_OrState();
         }
+       
     }
 }
 
