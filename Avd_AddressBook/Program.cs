@@ -295,10 +295,27 @@ namespace Avd_AddressBook
                 }
             }
         }
+        //UC-9 Alter table and add ContactType
+        public static void AlterTable_CreateContactType()
+        {
+            List<ContactDetails> contacts = new List<ContactDetails>();
+            ContactDetails contactDetails = new ContactDetails();
+            SqlConnection connection = new SqlConnection(connectionString);
+            string spname = "dbo.AddContactType";
+            using (connection)
+            {
+                SqlCommand sqlCommand = new SqlCommand(spname, connection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                connection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                connection.Close();                
+            }
+        }
         static void Main(string[] args)
         {
             AddressBook.EstablishConnection();
-            //AddressBook.CreateAddressBook();
+            AddressBook.CreateAddressBook();
+            AddressBook.AlterTable_CreateContactType();
             int val;
             do
             {
@@ -332,7 +349,7 @@ namespace Avd_AddressBook
                         break;
                     case 0:
                         Console.WriteLine("*****Exit*****");
-                        break;
+                        break;                        
                 }
             }while(val!=0);
         }
