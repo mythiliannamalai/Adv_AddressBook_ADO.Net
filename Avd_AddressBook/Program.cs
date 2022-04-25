@@ -240,26 +240,101 @@ namespace Avd_AddressBook
                             contactDetails.Zipcode = (string)reader["Zipcode"];
                             contactDetails.PhoneNumber = (string)reader["PhoneNumber"];
                             contactDetails.EmailId = (string)reader["EmailId"];
-                            contacts.Add(contactDetails);                            
+                            contacts.Add(contactDetails);
                             Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
                                 + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
                                + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
                             Console.WriteLine("Contact Count :");
-                            Console.WriteLine(contacts.Count());
+                            Console.WriteLine(contacts.Count());                            
                         }
                         connection.Close();
                     }
                 }
             }
         }
-        static void Main(string[]args)
+        //UC-8 Retrive value base on city and Alphabetical orider
+        public static void GetDataFrom_City_OrState_AlphabeticalOrder()
+        {
+            List<ContactDetails> contacts = new List<ContactDetails>();
+            ContactDetails contactDetails = new ContactDetails();
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            string spname = "dbo.GetDataIn_alphabeticalOrder";
+            using (connection)
+            {
+                SqlCommand sqlCommand = new SqlCommand(spname, connection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                Console.WriteLine("Retrive Contact based on city ot state by Alphabetical order");
+                Console.WriteLine("-------------------------------------------------------------");
+                Console.WriteLine("Enter City :");
+                contactDetails.City = Console.ReadLine();
+                sqlCommand.Parameters.AddWithValue("@City", contactDetails.City);                
+                connection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                if (reader.Read())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            contactDetails.FirstName = (string)reader["FirstName"];
+                            contactDetails.LastName = (string)reader["LastName"];
+                            contactDetails.Address = (string)reader["Address"];
+                            contactDetails.City = (string)reader["City"];
+                            contactDetails.State = (string)reader["State"];
+                            contactDetails.Zipcode = (string)reader["Zipcode"];
+                            contactDetails.PhoneNumber = (string)reader["PhoneNumber"];
+                            contactDetails.EmailId = (string)reader["EmailId"];
+                            contacts.Add(contactDetails);
+                            Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
+                                + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
+                               + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+        }
+        static void Main(string[] args)
         {
             AddressBook.EstablishConnection();
-            AddressBook.CreateAddressBook();
-            AddressBook.Add_Contact();
-            AddressBook.Edit_Contact();
-            AddressBook.Delete_Contact();
-            AddressBook.GetDataFrom_City_OrState();
+            //AddressBook.CreateAddressBook();
+            int val;
+            do
+            {
+                Console.WriteLine("\n1.Add contact");
+                Console.WriteLine("2.Edit contact");
+                Console.WriteLine("3.Delete contact");
+                Console.WriteLine("4.Get contact base on city and state");
+                Console.WriteLine("5.Get contact base on city order by alphabetical order");
+                Console.WriteLine("0.Exit");
+                Console.WriteLine("Enter your choice");
+            val = int.Parse(Console.ReadLine());
+           
+                switch (val)
+                {
+                    case 1:
+                        AddressBook.Add_Contact();
+                        break;
+                    case 2:
+                        AddressBook.Edit_Contact();
+                        break;
+                    case 3:
+                        AddressBook.Delete_Contact();
+                        break;
+                    case 4:
+                        Console.WriteLine("\nGet contact base on city and state and count");
+                        AddressBook.GetDataFrom_City_OrState();
+                        break;
+                     case 5:
+                        Console.WriteLine("\nGet contact base on city by alphabetical order");
+                        AddressBook.GetDataFrom_City_OrState_AlphabeticalOrder();
+                        break;
+                    case 0:
+                        Console.WriteLine("*****Exit*****");
+                        break;
+                }
+            }while(val!=0);
         }
        
     }
