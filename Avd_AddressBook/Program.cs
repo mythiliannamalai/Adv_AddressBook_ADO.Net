@@ -92,9 +92,10 @@ namespace Avd_AddressBook
                 SqlDataReader reader = sqlCommand.ExecuteReader();
                 Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
                     + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
-                    + contactDetails.PhoneNumber + "," + contactDetails.EmailId);            
-                   connection.Close();                
-            }
+                    + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
+                contacts.Add(contactDetails);
+                connection.Close();                
+            }           
         }
         //UC-4 Edit contact
         public static void Edit_Contact()
@@ -153,7 +154,7 @@ namespace Avd_AddressBook
                             contacts.Add(contactDetails);
                             Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
                                 + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
-                               + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
+                               + contactDetails.PhoneNumber + "," + contactDetails.EmailId);                          
                         }
                         connection.Close();
                     }
@@ -203,7 +204,7 @@ namespace Avd_AddressBook
                 }
             }
         }
-        //UC-6 Retrive value base on city and state
+        //UC-6 && 7 Retrive value base on city and state and count
         public static void GetDataFrom_City_OrState()
         {
             List<ContactDetails> contacts = new List<ContactDetails>();
@@ -239,10 +240,12 @@ namespace Avd_AddressBook
                             contactDetails.Zipcode = (string)reader["Zipcode"];
                             contactDetails.PhoneNumber = (string)reader["PhoneNumber"];
                             contactDetails.EmailId = (string)reader["EmailId"];
-                            contacts.Add(contactDetails);
+                            contacts.Add(contactDetails);                            
                             Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
                                 + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
                                + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
+                            Console.WriteLine("Contact Count :");
+                            Console.WriteLine(contacts.Count());
                         }
                         connection.Close();
                     }
@@ -252,10 +255,10 @@ namespace Avd_AddressBook
         static void Main(string[]args)
         {
             AddressBook.EstablishConnection();
-            //AddressBook.CreateAddressBook();
-            //AddressBook.Add_Contact();
-            //AddressBook.Edit_Contact();
-            //AddressBook.Delete_Contact();
+            AddressBook.CreateAddressBook();
+            AddressBook.Add_Contact();
+            AddressBook.Edit_Contact();
+            AddressBook.Delete_Contact();
             AddressBook.GetDataFrom_City_OrState();
         }
        
