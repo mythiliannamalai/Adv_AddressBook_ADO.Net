@@ -157,13 +157,55 @@ namespace Avd_AddressBook
                 }
             }
         }
-        
+        public static void Delete_Contact()
+        {
+            List<ContactDetails> contacts = new List<ContactDetails>();
+            ContactDetails contactDetails = new ContactDetails();
+
+            SqlConnection connection = new SqlConnection(connectionString);
+            string spname = "dbo.Delete_Contact";
+            using (connection)
+            {
+                SqlCommand sqlCommand = new SqlCommand(spname, connection);
+                sqlCommand.CommandType = CommandType.StoredProcedure;
+                Console.WriteLine("Delete Contact");
+                Console.WriteLine("--------------");
+                Console.WriteLine("First Name :");
+                contactDetails.FirstName = Console.ReadLine();
+                sqlCommand.Parameters.AddWithValue("@FirstName", contactDetails.FirstName);
+                connection.Open();
+                SqlDataReader reader = sqlCommand.ExecuteReader();
+                if (reader.Read())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            contactDetails.FirstName = (string)reader["FirstName"];
+                            contactDetails.LastName = (string)reader["LastName"];
+                            contactDetails.Address = (string)reader["Address"];
+                            contactDetails.City = (string)reader["City"];
+                            contactDetails.State = (string)reader["State"];
+                            contactDetails.Zipcode = (string)reader["Zipcode"];
+                            contactDetails.PhoneNumber = (string)reader["PhoneNumber"];
+                            contactDetails.EmailId = (string)reader["EmailId"];
+                            contacts.Add(contactDetails);
+                            Console.WriteLine(contactDetails.FirstName + "," + contactDetails.LastName + "," + contactDetails.Address + ","
+                                + contactDetails.City + "," + contactDetails.State + "," + contactDetails.Zipcode, ","
+                               + contactDetails.PhoneNumber + "," + contactDetails.EmailId);
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+        }
         static void Main(string[]args)
         {
             AddressBook.EstablishConnection();  
-            AddressBook.CreateAddressBook();
-            AddressBook.Add_Contact();
-            AddressBook.Edit_Contact();
+            //AddressBook.CreateAddressBook();
+            //AddressBook.Add_Contact();
+            //AddressBook.Edit_Contact();
+                AddressBook.Delete_Contact();
         }
     }
 }
