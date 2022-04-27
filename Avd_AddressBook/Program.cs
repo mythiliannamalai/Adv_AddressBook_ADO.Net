@@ -311,8 +311,38 @@ namespace Avd_AddressBook
                 connection.Close();                
             }
         }
+        //UC-10 Count by Contact type
+        public static String CountContct()
+        {
+            int tempInt = 0;
+            int tempInt1 = 0;
+            int tempInt2 = 0;
+            using (SqlConnection sqlCon = new SqlConnection(connectionString))
+            {
+                using (SqlCommand sqlComm = new SqlCommand("CountByContactType", sqlCon))
+                {
+                    sqlComm.CommandType = CommandType.StoredProcedure;
+
+                    sqlComm.Parameters.Add("@Count", SqlDbType.Int);
+                    sqlComm.Parameters.Add("@Count1", SqlDbType.Int);
+                    sqlComm.Parameters.Add("@Count2", SqlDbType.Int);
+                    sqlCon.Open();
+                    sqlComm.ExecuteReader();
+                    
+                    tempInt = Convert.ToInt32(sqlComm.Parameters["@Count"]);
+                    tempInt1 = Convert.ToInt32(sqlComm.Parameters["@Count1"]);
+                    tempInt2 = Convert.ToInt32(sqlComm.Parameters["@Count2"]);
+                    Console.WriteLine(tempInt);
+                    Console.WriteLine(tempInt1);
+                    Console.WriteLine(tempInt2);
+                }
+            }
+            return tempInt.ToString();
+        }      
+        
         static void Main(string[] args)
         {
+            AddressBook book = new AddressBook();
             AddressBook.EstablishConnection();
             AddressBook.CreateAddressBook();
             AddressBook.AlterTable_CreateContactType();
@@ -324,10 +354,10 @@ namespace Avd_AddressBook
                 Console.WriteLine("3.Delete contact");
                 Console.WriteLine("4.Get contact base on city and state");
                 Console.WriteLine("5.Get contact base on city order by alphabetical order");
+                Console.WriteLine("6.Contact type count");
                 Console.WriteLine("0.Exit");
                 Console.WriteLine("Enter your choice");
-            val = int.Parse(Console.ReadLine());
-           
+                val = int.Parse(Console.ReadLine());           
                 switch (val)
                 {
                     case 1:
@@ -347,13 +377,15 @@ namespace Avd_AddressBook
                         Console.WriteLine("\nGet contact base on city by alphabetical order");
                         AddressBook.GetDataFrom_City_OrState_AlphabeticalOrder();
                         break;
+                    case 6:                        
+                        AddressBook.CountContct();
+                        break;
                     case 0:
                         Console.WriteLine("*****Exit*****");
                         break;                        
                 }
             }while(val!=0);
-        }
-       
+        }       
     }
 }
 

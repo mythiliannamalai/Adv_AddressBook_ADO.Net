@@ -16,6 +16,7 @@ namespace Avd_AddressBook
         public string Zipcode { get; set; }
         public string PhoneNumber { get; set; }
         public string EmailId { get; set; }
+        public string ContactType { get; set; }
     }
     
 }
